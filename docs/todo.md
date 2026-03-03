@@ -9,9 +9,9 @@
 ## 进度总览
 
 | Phase | 内容 | 预估时间 | 状态 |
-|-------|------|----------|------|
+|-------|------|----------|----- |
 | Phase 0 | 环境搭建 & 脚手架 | 0.5 天 | ✅ 完成 |
-| Phase 1 | 后端 Auth + 基础 API | 1 天 | ⬜ 未开始 |
+| Phase 1 | 后端 Auth + 基础 API | 1 天 | ✅ 完成 |
 | Phase 2 | RAG 知识库 | 1.5 天 | ⬜ 未开始 |
 | Phase 3 | ADK Agent + 关卡生成 | 2 天 | ⬜ 未开始 |
 | Phase 4 | 前端 UI | 2 天 | ⬜ 未开始 |
@@ -356,3 +356,13 @@ _（每个 Phase 完成后在此记录）_
 - `tailwind.config.ts` 已删除（v4 改用 CSS `@theme` 指令）  
 - `globals.css` 改用 `@import "tailwindcss"` + `@theme` 定义考拉主题色  
 **启动脚本**：`start.py` 可并行启动前后端 ✅
+
+### Phase 1 完成（2026-03-03）
+
+**后端 Auth**：`POST /auth/anonymous` 正常生成 UUID + 写入 Firestore ✅  
+**Firestore 服务**：`FirestoreService` 封装完整（set/get/update/delete/query/delete_where）✅  
+**课程 CRUD**：`POST/GET/DELETE /courses` 含级联删除（progress/feedback/xp_logs）✅  
+**测试**：8 passed（test_health + test_phase1，使用 mock Firestore，不依赖真实网络）✅  
+- 版本冲突修复：`fastapi==0.115.0` → `>=0.124.1`（与 google-adk==1.26.0 兼容）  
+- 版本修复：`pydantic==2.9.2` → `==2.12.5`（Python 3.14 预编译 wheel 存在）  
+- langchain 系列延迟安装（Phase 2 RAG 时再装，避免安装超时）
