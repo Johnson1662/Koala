@@ -1,0 +1,40 @@
+# 凭证 & 密钥（绝对不能提交）
+*.json
+!src/frontend/package.json
+!src/frontend/package-lock.json
+!src/frontend/tsconfig.json
+!src/frontend/.eslintrc.json
+credentials.json
+*-adminsdk-*.json
+*-service-account*.json
+.env
+.env.local
+.env.*.local
+src/backend/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js
+src/frontend/node_modules/
+src/frontend/.next/
+src/frontend/out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

@@ -12,8 +12,8 @@
 |-------|------|----------|----- |
 | Phase 0 | 环境搭建 & 脚手架 | 0.5 天 | ✅ 完成 |
 | Phase 1 | 后端 Auth + 基础 API | 1 天 | ✅ 完成 |
-| Phase 2 | RAG 知识库 | 1.5 天 | ⬜ 未开始 |
-| Phase 3 | ADK Agent + 关卡生成 | 2 天 | ⬜ 未开始 |
+| Phase 2 | RAG 知识库 | 1.5 天 | ✅ 完成 |
+| Phase 3 | ADK Agent + 关卡生成 | 2 天 | ✅ 完成 |
 | Phase 4 | 前端 UI | 2 天 | ⬜ 未开始 |
 | Phase 5 | 语音流 Bidi-streaming | 1.5 天 | ⬜ 未开始 |
 | Phase 6 | 云端部署 + Demo | 1 天 | ⬜ 未开始 |
@@ -366,3 +366,23 @@ _（每个 Phase 完成后在此记录）_
 - 版本冲突修复：`fastapi==0.115.0` → `>=0.124.1`（与 google-adk==1.26.0 兼容）  
 - 版本修复：`pydantic==2.9.2` → `==2.12.5`（Python 3.14 预编译 wheel 存在）  
 - langchain 系列延迟安装（Phase 2 RAG 时再装，避免安装超时）
+
+### Phase 2 完成（2026-03-03）
+
+**RAG Service**：`split_text` + `parse_pdf` + `parse_url` + `format_citation` + `build_rag_context` + `RAGService`，完全不依赖 LangChain ✅  
+**Endpoints**：`POST /rag/upload`（PDF/URL）+ `GET /rag/status/{course_id}` ✅  
+**测试**：21 passed（test_health + test_phase1 + test_rag）✅  
+- 根本决策：完全放弃 LangChain（不兼容 Python 3.14），改用原生 pypdf + httpx + html.parser  
+- 测试 mock 修复：FastAPI `Depends` 必须用 `app.dependency_overrides`，不能用 `patch("module.func")`  
+- 开发模式：RAG 跳过 Embedding/Vector Search，用关键词匹配替代；生产模式走 Vertex AI
+
+### Phase 3 完成（2026-03-04）
+
+**Agent Service**：6 Agent 流水线（outline_agent → lesson_planner → ParallelAgent(svg+quiz) → verifier → feedback_agent）✅  
+**XP Service**：`record_answer()` 正确实现（答对+10 XP，3连击额外+10 XP，写入 xp_logs）✅  
+**Lessons 路由**：`POST /lessons/generate`、`GET /lessons/{id}`、`POST /lessons/{id}/answer`、`POST /lessons/{id}/feedback` ✅  
+**Courses 路由扩展**：`POST /courses/{id}/outline` 调用 Agent 生成大纲并回写 Firestore ✅  
+**测试**：39 passed（test_health + test_phase1 + test_rag + test_phase3）✅  
+- courses.py 重构为 `Depends(_get_db)` 模式，test_phase1.py 同步更新 mock 方式  
+- delete_course 现在级联删除 5 个 collection（progress/feedback/xp_logs/rag_sources/lessons）  
+**.env 更新**：统一切换到 `GOOGLE_GENAI_USE_VERTEXAI=TRUE` + `VERTEX_AI_PROJECT_ID=openlearner-488611`
