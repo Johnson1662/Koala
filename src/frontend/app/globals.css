@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #5C8A3C;
+  --color-secondary: #8B6347;
+  --color-koala-bg: #FBF7F0;
+  --color-koala-green: #5C8A3C;
+  --color-koala-brown: #8B6347;
+  --color-koala-light: #E8F5E2;
+
+  --animate-spin-slow: spin 2s linear infinite;
+}
+
+:root {
+  --background: #FBF7F0;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
